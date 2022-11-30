@@ -38,24 +38,32 @@ int main()
       grau[v]++;
     }
 
-    // empilha todos que tem menos de k amigos
+    // empilha todos os vertices 
     priority_queue<pair<int,int>> PQ;
     for(int i = 1; i <= n; i++)
-      if(grau[i] < k)
-        PQ.push({grau[i], i});
-
-    //para cada um que nao vai na festa, reduz o numero dos seus amigos
-    while(!PQ.empty())
     {
-      int x = PQ.top().second;
-      PQ.pop();
-
-      for(auto it = lista_adj[x].begin(); it != lista_adj[x].end(); it++)
-          //se o numero de amigos foi reduzido, inclui na PQ para tirar mais amigos
-          if(--grau[*it] == k-1)
-            PQ.push({grau[*it], *it});
+      PQ.push({grau[i], i});
     }
 
+    while(!PQ.empty())
+    {
+      if(PQ.top().first > 0 )
+      {
+        int x = PQ.top().second;
+        PQ.pop();
+        //Desempilha o vertice de maior grau e tem mais vizinhos 
+
+        for(auto it = lista_adj[x].begin(); it != lista_adj[x].end(); it++)
+        {
+          //reduz o grau de todos os vizinhos 
+          grau[*it]--;
+        }
+      }
+      else
+        PQ.pop();
+    }
+
+    /*
     // apenas para imprimir corretmente
     bool primeiro = true;
     for(int i = 1; i <= n; i++)
@@ -75,6 +83,7 @@ int main()
     
     cin >> n >> m >> k;
   }
+  */
 
   return 0;
 }
