@@ -9,9 +9,18 @@ using namespace std;
 int main()
 {  
   int n, m, k;
-  cin >> n >> m >> k;
+  cin >> k >> n >> m;
+  bool lampadaAcesa[n + 1]; //indica se a lâmpada está acesa  
+  int interruptor = 0;  //indica quantos interruptores foram acionados
+  
+  //Todas lâmpadas acesas
+  for(int i =1 ; i < n + 1; i++)
+  {
+      lampadaAcesa[i] = true;
+  }
 
-  while(!cin.eof())
+
+  for(int j = 0 ; j < k ; j++)
   {
     // considerando que os índices dos vértices começam de 1 e vão até n
     vector<int>* lista_adj = new vector<int>[n+1];
@@ -47,43 +56,30 @@ int main()
 
     while(!PQ.empty())
     {
-      if(PQ.top().first > 0 )
+        //Se a lâmpada está acesa
+      if(lampadaAcesa[PQ.top().first])
       {
         int x = PQ.top().second;
-        PQ.pop();
-        //Desempilha o vertice de maior grau e tem mais vizinhos 
-
+        PQ.pop();   //Desempilha o vertice de maior grau e mais vizinhos 
+        interruptor++;  //aperta um interruptor  
+        lampadaAcesa[x] = false;    //Apaga a lâmpada
+        
         for(auto it = lista_adj[x].begin(); it != lista_adj[x].end(); it++)
         {
-          //reduz o grau de todos os vizinhos 
-          grau[*it]--;
+          lampadaAcesa[*it] = false;     //apaga todas as lâmpadas vizinhas 
+          int y = *it;
+          for(auto it2 = lista_adj[y].begin(); it2 != lista_adj[y].end(); it2++)
+          {
+            grau[*it2]--;   //Diminiu o grau dos vizinhos da lampada vizinha apagada
+          }
         }
       }
       else
-        PQ.pop();
+        PQ.pop();   //Se lâmpada está apagada retira da fila de prioridade
     }
 
-    /*
-    // apenas para imprimir corretmente
-    bool primeiro = true;
-    for(int i = 1; i <= n; i++)
-      if(grau[i]>=k)
-      {
-        if(!primeiro)
-            cout <<" ";
-        
-        cout << i;
-        primeiro = false;
-      }
-
-    if(primeiro)
-        cout << 0;
-    
-    cout << endl;
-    
-    cin >> n >> m >> k;
+    cout << endl << interruptor ;
   }
-  */
 
   return 0;
 }
