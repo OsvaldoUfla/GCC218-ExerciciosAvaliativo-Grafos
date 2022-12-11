@@ -7,10 +7,30 @@
 
 using namespace std;
 
-// cores dos vertices
-#define BRANCO 0 // vertice nao descoberto
-#define CINZA 1 // vertice descoberto
-#define PRETO 2 // vertice fechado
+//vertices representam Lâmpadas acesas ou apagadas
+#define acesa 0 // Lâmpada acesa
+#define apagada 1 // Lâmpada apagada
+
+/*Retorna o indice do maior elemento de um vetor
+*parametro : referencia do vetor
+*retorno : int (indice da localização do maior elemento se não existe maior que zero retorna zero)
+*/
+int retornaMaior(int vetor[], int tam)
+{
+  int n = 0;
+  int maior = 0;
+
+  for (int i =0 ; i < tam ; i++)
+  {
+      if(vetor[i] > maior)
+      {
+        maior = vetor[i];
+        n = i;
+      }
+  }
+  
+  return n;
+}
 
 int main()
 {  
@@ -20,16 +40,14 @@ int main()
   while(!cin.eof())
   {
     // alocando as estruturas auxiliares
-    int* dist = new int[n+1]; // distancia de todos os vertices em relacao a origem s
-    int* pai = new int[n+1]; // armazena o pai de cada vertice
-    int* cor = new int[n+1]; // armazena a cor de cada vertice
+    int* grau = new int[n+1]; // grau de cada vertice
+    int* lampada = new int[n+1]; // armazena se a lâmpada eatá acesa ou não
     
     // iniciando as estruturas auxiliares
     for(int i = 1; i <= n; i++)
     {
-        dist[i] = 0;
-        pai[i] = -1;
-        cor[i] = BRANCO;
+        grau[i] = 0;
+        lampada[i] = acesa;
     }
    
     vector<int>* lista_adj = new vector<int>[n+1];
@@ -49,51 +67,37 @@ int main()
       // grafo nao-orientado
       lista_adj[u].push_back(v); //u -> v
       lista_adj[v].push_back(u); //v -> u
+      grau[u]++;
+      grau[v]++;
     }
 
-    int s = 1; // vertice origem
+    int s = retornaMaior(grau, n+1); // vertice origem
     queue<int> fila; // fila de vertices a serem explorados na BFS
-    fila.push(s);
-    cor[s] = CINZA;
+    
+    lampada[s] = apagada;
+    grau[s] = 0;
+    for(auto it = lista_adj[s].begin(); it != lista_adj[s].end(); it++)
+    {
+        fila.push(*it);
+    }
    
-    //para cada um que nao vai na festa, reduz o numero dos seus amigos
+    //para cada interruptor acionado apaga o lampada e suas vizinhas
     while(!fila.empty())
     {
       int u = fila.front();
       fila.pop();
-      cor[u]= PRETO;
+      lampada[u] = apagada;
+      grau[u] = 0;
 
       for(auto it = lista_adj[u].begin(); it != lista_adj[u].end(); it++)
       { 
-          // se o vertice ainda nao foi descoberto
-          if(cor[*it] == BRANCO)
-          {
-              cor[*it] = CINZA;
-              pai[*it] = u;
-              dist[*it] = dist[u] + 1;
-              fila.push(*it);
-          }   
+          grau[*it]--;
       }
     }
    
-    cout << "Distancias" << endl;
-    for(int k = 1; k <= n; k++)
-    {
-        cout << "dist[" << k << "]: " << dist[k] << endl;
-    }
    
-    cout << "Pai" << endl;
-    for(int k = 1; k <= n; k++)
-    {
-        cout << "pai[" << k << "]: " << pai[k] << endl;
-    }
-    cout << "*** *** ***" << endl;
-   
-    delete[] pai;
-    delete[] cor;
-    delete[] dist;
-    
-    cin >> n >> m;
+    delete[] grau;
+    delete[] lampada;
   }
 
 return 0;
