@@ -1,3 +1,4 @@
+%%writefile bfs.cpp
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -6,20 +7,33 @@
 
 using namespace std;
 
+// cores dos vertices
+#define BRANCO 0 // vertice nao descoberto
+#define CINZA 1 // vertice descoberto
+#define PRETO 2 // vertice fechado
+
 int main()
 {  
-  int n, m, k;
-  cin >> n >> m >> k;
+  int n, m;
+  cin >> n >> m;
 
   while(!cin.eof())
   {
-    // considerando que os índices dos vértices começam de 1 e vão até n
-    vector<int>* lista_adj = new vector<int>[n+1];
-    int* grau = new int[n+1];
-
-    for(int i = 1; i <= n; i++)
-      grau[i] = 0; //grau do nó i
+    // alocando as estruturas auxiliares
+    int* dist = new int[n+1]; // distancia de todos os vertices em relacao a origem s
+    int* pai = new int[n+1]; // armazena o pai de cada vertice
+    int* cor = new int[n+1]; // armazena a cor de cada vertice
     
+    // iniciando as estruturas auxiliares
+    for(int i = 1; i <= n; i++)
+    {
+        dist[i] = 0;
+        pai[i] = -1;
+        cor[i] = BRANCO;
+    }
+   
+    vector<int>* lista_adj = new vector<int>[n+1];
+
     // leitura do grafo
     int u, v;
     for(int i = 0; i < m; i++)
@@ -28,62 +42,59 @@ int main()
 
       // evitando a leitura de vertices repetidos nas listas
       if(find(lista_adj[u].begin(), lista_adj[u].end(), v) != lista_adj[u].end())
+      {
         continue;
-    
+      }
+
       // grafo nao-orientado
       lista_adj[u].push_back(v); //u -> v
       lista_adj[v].push_back(u); //v -> u
-      
-      grau[u]++;
-      grau[v]++;
     }
 
-    // empilha todos os vertices 
-    priority_queue<pair<int,int>> PQ;
-    for(int i = 1; i <= n; i++)
+    int s = 1; // vertice origem
+    queue<int> fila; // fila de vertices a serem explorados na BFS
+    fila.push(s);
+    cor[s] = CINZA;
+   
+    //para cada um que nao vai na festa, reduz o numero dos seus amigos
+    while(!fila.empty())
     {
-      PQ.push({grau[i], i});
-    }
+      int u = fila.front();
+      fila.pop();
+      cor[u]= PRETO;
 
-    while(!PQ.empty())
+      for(auto it = lista_adj[u].begin(); it != lista_adj[u].end(); it++)
+      { 
+          // se o vertice ainda nao foi descoberto
+          if(cor[*it] == BRANCO)
+          {
+              cor[*it] = CINZA;
+              pai[*it] = u;
+              dist[*it] = dist[u] + 1;
+              fila.push(*it);
+          }   
+      }
+    }
+   
+    cout << "Distancias" << endl;
+    for(int k = 1; k <= n; k++)
     {
-      if(PQ.top().first > 0 )
-      {
-        int x = PQ.top().second;
-        PQ.pop();
-        //Desempilha o vertice de maior grau e tem mais vizinhos 
-
-        for(auto it = lista_adj[x].begin(); it != lista_adj[x].end(); it++)
-        {
-          //reduz o grau de todos os vizinhos 
-          grau[*it]--;
-        }
-      }
-      else
-        PQ.pop();
+        cout << "dist[" << k << "]: " << dist[k] << endl;
     }
-
-    /*
-    // apenas para imprimir corretmente
-    bool primeiro = true;
-    for(int i = 1; i <= n; i++)
-      if(grau[i]>=k)
-      {
-        if(!primeiro)
-            cout <<" ";
-        
-        cout << i;
-        primeiro = false;
-      }
-
-    if(primeiro)
-        cout << 0;
+   
+    cout << "Pai" << endl;
+    for(int k = 1; k <= n; k++)
+    {
+        cout << "pai[" << k << "]: " << pai[k] << endl;
+    }
+    cout << "*** *** ***" << endl;
+   
+    delete[] pai;
+    delete[] cor;
+    delete[] dist;
     
-    cout << endl;
-    
-    cin >> n >> m >> k;
+    cin >> n >> m;
   }
-  */
 
-  return 0;
+return 0;
 }
