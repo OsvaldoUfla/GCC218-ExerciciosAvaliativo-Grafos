@@ -3,7 +3,7 @@
   Professor: Mayron César de O. Moreira.
   Alunos :
     Osvaldo Rodrigues de Faria Junior 201911203 14A
-    Robson Ferreira 14A
+    Robson Ferreira 202120530 14A
   
   Logica da resolução do execício
     Foi usado uma adaptação do algoritmo de busca em largura
@@ -21,6 +21,16 @@
 #include <functional>
 
 using namespace std;
+
+void exibe(int vetor[], int tam)
+{
+  cout << endl;
+  for (int i =0 ; i < tam ; i++)
+  {
+     cout << vetor[i] << endl;
+  }
+  cout << endl;
+}
 
 
 /*
@@ -52,7 +62,7 @@ int retornaMaior(int vetor[], int tam)
 
   for (int i =0 ; i < tam ; i++)
   {
-      if(vetor[i] > maior)
+      if(vetor[i] >= maior)
       {
         maior = vetor[i];
         n = i;
@@ -64,11 +74,13 @@ int retornaMaior(int vetor[], int tam)
 
 int main()
 {  
-  int x, n, m, interruptores = 0;
-  cin >>x >> n >> m;
+  int x;
+  cin >> x;
 
   for(int j = 0 ; j < x ; j++)
   {
+    int n, m, interruptores = 0;
+    cin >> n >> m;
     // alocando as estruturas auxiliares
     int* grau = new int[n]; // grau de cada vertice
     bool* lampada = new bool[n]; // armazena se a lâmpada eatá acesa ou não
@@ -108,6 +120,7 @@ int main()
     {
       interruptores++;
       int s = retornaMaior(grau, n); // vertice origem
+      
       queue<int> fila; // fila de vertices a serem explorados na BFS
       
       lampada[s] = false;
@@ -134,12 +147,12 @@ int main()
         }
       }
     }
+
     cout << interruptores <<endl;
    
     delete[] grau;
     delete[] lampada;
-
-    cin >> n >> m;
+    
   }
 
 return 0;
