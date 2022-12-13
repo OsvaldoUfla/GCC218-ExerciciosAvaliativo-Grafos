@@ -9,21 +9,10 @@ using namespace std;
 #define NAO_VISITADO 0
 #define VISITADO 1
 
-// Raiz da DFS
-int raiz;
-
-// Armazena a informacao se um vertice eh de articulacao
-bool* articulacoes;
-
 /*
  * Parametros:
  *  u -> vertice a ser explorado
  *  lista_adj -> lista de adjacencia, que modela o grafo
- *  low -> vetor com os menores tempos de descoberta de arestas que abracam um vertice
- *  d -> vetor dos tempos de descoberta pre-ordem de todos os vertices
- *  pai -> vetor com os pais de todos os vertices
- *  cont_dfs -> contador do tempo de descoberta em profundidade dos vertices
- *  filhos_raiz -> conta quantos filhos a raiz possui na DFS
  */
 void visita(int u, vector<int>* lista_adj, int* d, int& cont_dfs)
 {
