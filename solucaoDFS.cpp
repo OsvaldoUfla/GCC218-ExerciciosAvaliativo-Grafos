@@ -31,7 +31,8 @@ void visita(int u, vector<int>* lista_adj, int* d, int& cont_dfs)
 
 int main()
 {  
-  int n, m, k;
+
+  int n, m, k, cont_dfs = 0,cont_dfs1 = 999999999;
   cin >> k;
 
   for(int i =0 ; i < k ; i++)
@@ -64,21 +65,36 @@ int main()
       // grafo orientado
       lista_adj[u].push_back(v); //u -> v
     }
-
-    int cont_dfs = 0;
-
-    for(int i = 1; i <= n; i++)
+  
+    for(int j = n ; j > 0 ; j--)
     {
+      visita(j,  lista_adj, d, cont_dfs);
+      cont_dfs++;
+      for(int i = 1 ; i<=n ; i++)
+      {
         if(d[i] == NAO_VISITADO)
         {
             visita(i,  lista_adj, d, cont_dfs);
             cont_dfs++;
         }
+      }
+
+      if(cont_dfs < cont_dfs1)
+      {
+        cont_dfs1 = cont_dfs;
+      }
+
+      //cout << endl << cont_dfs;
+
+      cont_dfs = 0;
+      for(int i = 1; i <= n; i++)
+      {
+        d[i] = NAO_VISITADO;
+      }
     }
 
-    cout <<cont_dfs << endl;
-   
-   
+    cout <<cont_dfs1 << endl;
+
     delete[] d;
    
   }
