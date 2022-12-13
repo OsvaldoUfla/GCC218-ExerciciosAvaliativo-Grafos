@@ -1,61 +1,98 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <functional>
 
+using namespace std;
 
-#include <stdio.h>
-#include <stdlib.h>
-#define true 1
-#define false 0
+#define NAO_VISITADO 0
+#define VISITADO 1
 
-typedef int bool1;
-typedef int TIPOPESO;
+// Raiz da DFS
+int raiz;
 
-#define BRANCO 0
-#define AMARELO 1
-#define VERMELHO 2
+// Armazena a informacao se um vertice eh de articulacao
+bool* articulacoes;
 
-typedef struct adjacencia
+/*
+ * Parametros:
+ *  u -> vertice a ser explorado
+ *  lista_adj -> lista de adjacencia, que modela o grafo
+ *  low -> vetor com os menores tempos de descoberta de arestas que abracam um vertice
+ *  d -> vetor dos tempos de descoberta pre-ordem de todos os vertices
+ *  pai -> vetor com os pais de todos os vertices
+ *  cont_dfs -> contador do tempo de descoberta em profundidade dos vertices
+ *  filhos_raiz -> conta quantos filhos a raiz possui na DFS
+ */
+void visita(int u, vector<int>* lista_adj, int* d, int& cont_dfs)
 {
-    int vertice;
-    TIPOPESO PESO;
-    struct adjacencia *prox;    
-}ADJACENCIA;
-
-typedef struct vertice
-{
-    ADJACENCIA *cab;
-}VERTICE;
-
-typedef struct grafo
-{
-    int vertices;
-    int arestas;
-    VERTICE * adj;
-}GRAFO;
-
-void profundidade(GRAFO *g)
-{
-    int cor[g->vertices];
-
-    int u;
-    for(int u = 0 ; u < g-> vertices ;u++)
+    d[u] = VISITADO;
+ 
+    for(auto it = lista_adj[u].begin(); it != lista_adj[u].end(); it++)
     {
-        cor[u] = BRANCO;
-    }
-    for(int u = 0 ; u < g->vertices ;u++)
-    {
-        if(cor[u] == BRANCO ; u++)
-            visitaP(g, u, cor);
+        int v = *it;
+        if(d[v] == NAO_VISITADO)
+        {
+            visita(v, lista_adj, d, cont_dfs);
+        }
     }
 }
 
-void visitaP(GRAFO *g, int u, int *cor)
-{
-    cor[u] = AMARELO;
-    ADJACENCIA *v = g->adj[u].cab;
-    while(v)
+
+int main()
+{  
+  int n, m, k;
+  cin >> k;
+
+  for(int i =0 ; i < k ; i++)
+  {
+    cin >> n >> m;
+
+    // alocando as estruturas auxiliares
+    int* d = new int[n+1];
+   
+    // iniciando as estruturas auxiliares
+    for(int i = 1; i <= n; i++)
     {
-        if(cor[v->vertice] == BRANCO)
-            visitaP(g, v->vertice, cor);
-        v = v -> prox;
+        d[i] = NAO_VISITADO;
     }
-    cor[u] = VERMELHO;
+   
+    vector<int>* lista_adj = new vector<int>[n+1];
+
+    // leitura do grafo
+    int u, v;
+    for(int i = 0; i < m; i++)
+    {
+      cin >> u >> v; // lendo as arestas do grafo
+
+      // evitando a leitura de vertices repetidos nas listas
+      if(find(lista_adj[u].begin(), lista_adj[u].end(), v) != lista_adj[u].end())
+      {
+        continue;
+      }
+
+      // grafo orientado
+      lista_adj[u].push_back(v); //u -> v
+    }
+
+    int cont_dfs = 0;
+
+    for(int i = 1; i <= n; i++)
+    {
+        if(d[i] == NAO_VISITADO)
+        {
+            visita(i,  lista_adj, d, cont_dfs);
+            cont_dfs++;
+        }
+    }
+
+    cout <<cont_dfs << endl;
+   
+   
+    delete[] d;
+   
+  }
+
+return 0;
 }
