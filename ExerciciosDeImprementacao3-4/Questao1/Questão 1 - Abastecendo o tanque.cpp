@@ -1,4 +1,4 @@
-/* #include <iostream>
+#include <iostream>
 #include <vector>
 #include <queue>
 #include <climits>
@@ -90,68 +90,4 @@ int main() {
         }
     }
     return 0;
-} */
-
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <limits>
-
-using namespace std;
-
-const int MAXV = 1000;
-const int MAXE = 10000;
-const int INF = numeric_limits<int>::max();
-
-vector<pair<int,int>> adj[MAXV]; // lista de adjacência
-int c[MAXV]; // custo de abastecer o combustível em cada cidade
-
-int dijkstra(int s, int t, int q) {
-priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-vector<int> dist(MAXV, INF);
-pq.push({0, s});
-dist[s] = 0;
-while (!pq.empty()) {
-int u = pq.top().second;
-int fuel = pq.top().first;
-pq.pop();
-if (u == t) return fuel; // chegou ao destino
-if (fuel > q) continue; // combustível insuficiente
-for (auto v : adj[u]) {
-int w = v.second;
-if (dist[u] + w < dist[v.first]) {
-dist[v.first] = dist[u] + w;
-int new_fuel = fuel + (dist[u] + w) * c[u];
-pq.push({new_fuel, v.first});
-}
-}
-}
-return -1; // não foi possível chegar ao destino
-}
-
-int main() {
-int n, m;
-cin >> n >> m;
-for (int i = 0; i < n; i++) {
-cin >> c[i];
-}
-for (int i = 0; i < m; i++) {
-int u, v, w;
-cin >> u >> v >> w;
-adj[u].push_back({v, w});
-adj[v].push_back({u, w});
-}
-int q;
-cin >> q;
-for (int i = 0; i < q; i++) {
-int s, t;
-cin >> q >> s >> t;
-int ans = dijkstra(s, t, q);
-if (ans == -1) {
-cout << "sem solucao\n";
-} else {
-cout << ans << '\n';
-}
-}
-return 0;
 }
