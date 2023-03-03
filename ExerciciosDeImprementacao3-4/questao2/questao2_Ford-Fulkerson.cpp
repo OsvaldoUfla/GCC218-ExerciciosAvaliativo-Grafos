@@ -4,18 +4,20 @@
   GCC218 - Algoritmos em Grafos
   Professor: Mayron César de O. Moreira.
   Alunos :
+    Julia de Carvalho Teixeira 201610018 14A
     Osvaldo Rodrigues de Faria Junior 201911203 14A
     Robson Ferreira 202120530 14A
   
   Logica da resolução do execício
-    Foi usado uma adaptação do algoritmo de busca em largura
-    O grafo é armazenado em uma lista de adjacencia
-    inicia a busca pelo vertice de maior grau 
-    define o vertice de maior grau e seu vizinhos como apagado 
-    atualiza o grau dos vertice ainda não apagado 
-    reinicia pelo novo vertce de maior grau
-    repete até apagar todos os vertices
+    Utilizando o algoritmo de Ford-Fulkerson para encontrar o fluxo maximo no grafo, e depois utilizando o 
+    conceito de corte minimo para encontrar as arestas que saem da componente1 e entram na componente2.
+    utilizando a BFS para encontrar as componente1 e as componente2 do grafo, e depois
+    imprimindo as arestas que saem da componente1 e entram na componente2.
 */
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 
 using namespace std;
 
@@ -55,6 +57,9 @@ int n;
 // Numero de arestas do grafo
 int m;
 
+/*
+* Executa o caminho aumentante a partir do vertice v, e atualiza a matriz de adjacencia
+*/
 void caminho_aumentante(int v, int capacidade_fluxo){
     if(v == s){
         fluxo = capacidade_fluxo;
@@ -68,6 +73,10 @@ void caminho_aumentante(int v, int capacidade_fluxo){
     }
 }
 
+/*
+* Executa a busca em largura no grafo, e armazena o pai de cada vertice e a distancia de cada vertice
+* se o parametro armazenaComponente for true, armazena os vertices da componente1
+*/
 void bfs(bool armazenaComponente){
     pai.assign(n, -1);
     dist.assign(n, INF);
@@ -96,27 +105,31 @@ void bfs(bool armazenaComponente){
 
 int main(){
 
+    // Leitura do numero de vertices e arestas
     cin >> n >> m;
         
     while (n != 0 && m != 0){
 
+            // Aloca a matriz de adjacencia
             MA = new int*[n];
             for(int i = 0; i < n; i++){
                 MA[i] = new int[n];
             }
 
+            // Inicializa a matriz de adjacencia com 0
             for(int j = 0; j < n; j++){
                     for(int k = 0; k < n; k++){
                         MA[j][k] = 0;
                     }
             } 
-            int u, v, cap;
+            int u, v, cap;// Vertice de origem, vertice de destino, capacidade da aresta
+            // Leitura das arestas
             for(int i = 0; i < m; i++){
                 cin >> u >> v >> cap;
-                u--;
+                u--;// Decrementa 1 para que o vertice 1 seja representado pelo indice 0
                 v--;
-                MA[u][v] = cap;
-                MA[v][u] = cap;
+                MA[u][v] = cap;// Adiciona a capacidade da aresta
+                MA[v][u] = cap;// Grafo nao direcionado por isso a aresta u->v tem a mesma capacidade que v->u
             }
 
 
