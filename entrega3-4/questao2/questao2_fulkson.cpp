@@ -31,6 +31,8 @@ int t;
 // Vetor que armazena o pai de cada vertice pela BFS
 typedef vector<int> vi;
 vi pai;
+vi componente1; // Vetor que armazena uma componente conexa depois do execução do algoritmo
+vi componente2;
 
 // Vetor que armazena a distancia de cada vertice, obtida pela BFS
 vi dist;
@@ -54,13 +56,12 @@ void caminho_aumentante(int v, int capacidade_fluxo)
         caminho_aumentante(pai[v], min(capacidade_fluxo, MA[pai[v]][v]));
         MA[pai[v]][v] -= fluxo;
         MA[v][pai[v]] += fluxo;
-        if(MA[pai[v]][v] == 0)
-            cout << pai[v] << " " << v << " " << fluxo  << endl;        
+        /* if(MA[pai[v]][v] == 0)
+            cout << pai[v] << " " << v << " " << fluxo  << endl;   */      
     }
 }
 
-void bfs()
-{
+void bfs(bool armazenaComponente){
     pai.assign(n, -1);
     dist.assign(n, INF);
     dist[s] = 0;
@@ -70,6 +71,9 @@ void bfs()
     while(!fila.empty())
     {
         int u = fila.front();
+        if(armazenaComponente){
+            componente1.push_back(u);
+        }
         fila.pop();
         if(u == t)
           break;
@@ -114,15 +118,15 @@ ifstream arquivo("in2.txt");
             fluxo_max = 0;
         
             // Origem sempre o 0
-            s = 1;
+            s = 0;
         
             // Destino sempre o n-1
-            t = 0; //n-1;
+            t = 1; //n-1;
         
             while(true)
             {
                 fluxo = 0;
-                bfs();
+                bfs(false);
                 caminho_aumentante(t, INF);
                 if(!fluxo)
                     break;
@@ -131,13 +135,18 @@ ifstream arquivo("in2.txt");
         
             cout << "Fluxo Máximo = " << fluxo_max << endl<< endl<< endl;
 
+            bfs(true);
+            
             for(int i = 0; i < n; i++)
-            {
-                for(int j = 0; j < n; j++)
-                {
-                    cout << MA[i][j] <<" ";
+                if((find(componente1.begin(), componente1.end(), i)) == componente1.end())
+                    componente2.push_back(i);
+
+            for(int x : componente2){
+                for(int y : componente1){
+                    if(MA[x][y] > 0)
+                        cout << y+1 << " " << x+1 << endl ;
                 }
-                cout << endl;
+                
             }
         }
     return 0;
