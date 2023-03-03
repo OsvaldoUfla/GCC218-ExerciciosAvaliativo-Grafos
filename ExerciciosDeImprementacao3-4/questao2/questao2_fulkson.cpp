@@ -1,10 +1,3 @@
-#include<iostream>
-#include <fstream>
-#include<vector>
-#include <queue>
-#include<utility>
-#include<functional>
-using namespace std;
 
 /*Exercícios de Implementação 3 e 4
     Questão 2: Empresa energética
@@ -23,6 +16,8 @@ using namespace std;
     reinicia pelo novo vertce de maior grau
     repete até apagar todos os vertices
 */
+
+using namespace std;
 
 #define INF 10000000
 
