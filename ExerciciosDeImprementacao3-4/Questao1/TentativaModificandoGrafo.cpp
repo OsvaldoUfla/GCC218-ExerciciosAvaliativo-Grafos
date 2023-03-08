@@ -8,6 +8,12 @@
     Osvaldo Rodrigues de Faria Junior 201911203 14A
     Robson Ferreira 202120530 14A
 
+    A ideia é criar um grafo modificado, nele é adiciona as arestas 
+    que representam os trechos que dá para fazer um um tanque de combustivel
+    porque se combustivel estiver mais barato na cidade atual
+    não se abastece o carro e continua a viajem.
+    Depois de modificar o grafo rodar o bellman ford para achar o menor caminho
+
 */
 
 #include<iostream>
@@ -69,23 +75,14 @@ void bellman_ford(int org){
                 ii vizinho = LA[u][j];
                 v = vizinho.first;
                 peso = vizinho.second;
-                x[v] = min(x[v], x[u] + peso * preco[u]);
+                if(peso < q)
+                    x[v] = min(x[v], x[u] + peso * preco[u]);
             }
         }
     }
 }
 
-void exibeAdjacencias(){
-    for(int e = 0 ; e < n; e++){
-        for(auto it = LA[e].begin(); it != LA[e].end(); it++){
-            ii v = *it;
-            cout << e << " -> " << v.first << " : " << v.second << endl;
-        }
-    }
-}
-
 void dfs(int u){
-   // visitado[u] = true;
     for(int i = 0; i < (int)LA[u].size(); i++){
         ii vizinho = LA[u][i];
         int v = vizinho.first;
@@ -95,10 +92,8 @@ void dfs(int u){
             LA[origemDaRecursao].push_back(ii(v, distanciaPercorrida));
         }
         if(distanciaPercorrida <= q){
-            //if(!visitado[v]){
-                dfs(v);
-                distanciaPercorrida -= peso;
-           // }
+            dfs(v);
+            distanciaPercorrida -= peso;
         }
         else{
             distanciaPercorrida -= peso;
@@ -106,8 +101,7 @@ void dfs(int u){
     }
 }
 
-int main()
-{
+int main(){
     cin >> n >> m;
     LA = new vii[n];
 
@@ -122,12 +116,6 @@ int main()
         LA[u].push_back(ii(v, p));
     }
 
-    for(int i = 0; i < n; i++){
-        origemDaRecursao = i;
-        dfs(i);
-        distanciaPercorrida = 0;
-    }
-
     cin >> quant_Testes;
 
     int MatrizCaracteristicas[quant_Testes][3];
@@ -138,7 +126,13 @@ int main()
         }
     }
 
-    //exibeAdjacencias();
+    q = MatrizCaracteristicas[0][0];
+
+    for(int i = 0; i < n; i++){
+        origemDaRecursao = i;
+        dfs(i);
+        distanciaPercorrida = 0;
+    }
 
     for(int i = 0; i < quant_Testes; i++){
         q = MatrizCaracteristicas[i][0];

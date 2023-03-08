@@ -56,28 +56,25 @@ int m;
 // numero de testes
 int quant_Testes;
 
-void bellman_ford(int org)
-{
-  x.assign(n, INF);
-  x[org] = 0;
-  
-  // variaveis auxiliares
-  int v, peso;
-  ii vizinho;
+void bellman_ford(int org){
+    x.assign(n, INF);
+    x[org] = 0;
+    
+    // variaveis auxiliares
+    int v, peso;
+    ii vizinho;
  
-  for(int i = 0; i < n - 1; i++)
-  {
-      for(int u = 0; u < n; u++)
-      {
-        for(int j = 0; j < (int)LA[u].size(); j++)
-        {
-            ii vizinho = LA[u][j];
-            v = vizinho.first;
-            peso = vizinho.second;
-            x[v] = min(x[v], x[u] + peso * preco[u]);
+    for(int i = 0; i < n - 1; i++){
+        for(int u = 0; u < n; u++){
+            for(int j = 0; j < (int)LA[u].size(); j++){
+                ii vizinho = LA[u][j];
+                v = vizinho.first;
+                peso = vizinho.second;
+                if(peso < q)
+                    x[v] = min(x[v], x[u] + peso * preco[u]);
+            }
         }
-      }
-  }
+    }
 }
 
 void exibeAdjacencias(){
@@ -113,7 +110,7 @@ void dfs(int u){
 
 int main(){
 
-    ifstream cin("entradas-saidas/4.in");
+    ifstream cin("entradas-saidas/3.in");
     if(!cin){
         cout << "Erro ao abrir o arquivo de entrada" << endl;
         return 0;
@@ -132,12 +129,6 @@ int main(){
         LA[u].push_back(ii(v, p));
     }
 
-    for(int i = 0; i < n; i++){
-        origemDaRecursao = i;
-        dfs(i);
-        distanciaPercorrida = 0;
-    }
-
     cin >> quant_Testes;
 
     int MatrizCaracteristicas[quant_Testes][3];
@@ -146,6 +137,14 @@ int main(){
         for(int j = 0; j < 3; j++){
             cin >> MatrizCaracteristicas[i][j];
         }
+    }
+
+    q = MatrizCaracteristicas[0][0];
+
+    for(int i = 0; i < n; i++){
+        origemDaRecursao = i;
+        dfs(i);
+        distanciaPercorrida = 0;
     }
 
     //exibeAdjacencias();
