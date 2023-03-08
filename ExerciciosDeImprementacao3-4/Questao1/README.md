@@ -50,7 +50,7 @@ Exemplo de Saída:
 sem solucao
 
 
-===================================================================================================
+=============================================================================================
 
 O aumento considerável no preço dos combustíveis faz com que o planejamento de qualquer viagem 
 seja feito com muita cautela.
