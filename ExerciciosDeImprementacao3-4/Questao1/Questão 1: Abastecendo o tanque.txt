@@ -67,3 +67,13 @@ uma cidade destino t, utilizando um carro com capacidade de combustível Q.
 
 
 Dica: dicionários (em Python) ou estruturas map (C++) podem ser úteis nesse exercício.
+
+Para determinar a viagem mais barata que se pode realizar entre uma cidade de origem s e uma cidade destino t, utilizando uma moto com capacidade de combustível Q, podemos aplicar o algoritmo de Dijkstra em um grafo modificado que leva em conta o preço do combustível.
+
+Para isso, vamos criar um grafo ponderado G'=(V',E'), em que cada cidade v é representada por dois vértices, v_0 e v_1. O vértice v_0 representa a cidade v com tanque vazio, enquanto o vértice v_1 representa a cidade v com tanque cheio. Além disso, vamos adicionar uma aresta direcionada (u_0,v_1) para cada aresta (u,v) de G, com peso w(u_0,v_1) = c[v] * (d(u,v) - Q), onde d(u,v) é a distância entre as cidades u e v em G.
+
+A ideia é que, ao percorrer a aresta (u_0,v_1), a moto abasteça na cidade v e encha o tanque, permitindo que chegue até a próxima cidade. O peso da aresta (u_0,v_1) leva em conta o custo do combustível necessário para percorrer a distância entre as cidades u e v, descontando a capacidade do tanque da moto.
+
+Aplicando o algoritmo de Dijkstra em G' a partir do vértice s_0, obtemos o menor caminho até o vértice t_1. O custo do caminho encontrado representa o menor custo para percorrer a distância entre as cidades s e t utilizando a moto com capacidade Q.
+
+Note que, para que o algoritmo de Dijkstra funcione corretamente, é necessário que o grafo seja conexo. Caso contrário, pode ser necessário aplicar o algoritmo para cada componente conexo do grafo.
